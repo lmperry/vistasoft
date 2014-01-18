@@ -33,7 +33,7 @@ switch param
             warning('vista:niftiError', 'No maximum value information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'calmin'
         if isfield(ni, 'cal_min')
             val = ni.cal_min;
@@ -41,7 +41,7 @@ switch param
             warning('vista:niftiError', 'No minimum value information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'data'
         if isfield(ni, 'data')
             val = ni.data;
@@ -49,7 +49,7 @@ switch param
             warning('vista:niftiError', 'No data information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'datatype'
         if isfield(ni, 'data_type')
             val = ni.data_type;
@@ -57,7 +57,7 @@ switch param
             warning('vista:niftiError', 'No data_type information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'dim'
         if isfield(ni, 'dim')
             val = ni.dim;
@@ -65,7 +65,7 @@ switch param
             warning('vista:niftiError', 'No dimension information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'fname'
         if isfield(ni, 'fname')
             val = ni.fname;
@@ -73,7 +73,7 @@ switch param
             warning('vista:niftiError', 'No file name information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'freqdim'
         if isfield(ni, 'freq_dim')
             val = ni.freq_dim;
@@ -81,7 +81,7 @@ switch param
             warning('vista:niftiError', 'No frequency dimension information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'ndim'
         if isfield(ni, 'ndim')
             val = ni.ndim;
@@ -89,7 +89,7 @@ switch param
             warning('vista:niftiError', 'No number of dimensions information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'numslices'
         if isfield(ni, 'slice_end') && isfield(ni,'slice_start')
             val = ni.slice_end - ni.slice_start + 1;
@@ -101,8 +101,8 @@ switch param
             dims = niftiGet(ni,'Dim');
             sliceDim = niftiGet(ni,'Slice Dim');
             val = dims(sliceDim);
-        end    
-        
+        end
+
         if val == 0
             error('vista:niftiError', 'The number of slices are not properly defined in this nifti. Please ensure that slice_start and slice_end are non-zero.');
         end
@@ -114,28 +114,28 @@ switch param
             warning('vista:niftiError', 'No phase dimension information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'pixdim'
         if isfield(ni, 'pixdim'), val = ni.pixdim;
         else
             warning('vista:niftiError', 'No pixdim information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'qto_ijk'
         if isfield(ni, 'qto_ijk'), val = ni.qto_ijk;
         else
             warning('vista:niftiError', 'No qto_ijk information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'qto_xyz'
         if isfield(ni, 'qto_xyz'), val = ni.qto_xyz;
         else
             warning('vista:niftiError', 'No qto_xyz information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'slicedim'
         %Get the slice dimension field
         if isfield(ni, 'slice_dim')
@@ -146,7 +146,7 @@ switch param
         end
         %Default to a slice dim of '3'
         if val == 0, val = 3; end
-        
+
     case 'slicedims'
         %Get the slice dimensions (i.e. the dimensions of each 2-D matrix
         %making up a slice)
@@ -157,21 +157,21 @@ switch param
         val(sliceDimLogical) = [];
         %val(1) = totDim(niftiGet(ni,'freq Dim'));
         %val(2) = totDim(niftiGet(ni,'phase Dim'));
-        
+
     case 'sto_ijk'
         if isfield(ni, 'qto_xyz'), val = ni.qto_xyz;
         else
             warning('vista:niftiError', 'No qto_xyz information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'sto_xyz'
         if isfield(ni, 'qto_xyz'), val = ni.qto_xyz;
         else
             warning('vista:niftiError', 'No qto_xyz information found in nifti. Returning empty');
             val = [];
         end
-        
+
     case 'voxelsize'
         if isfield(ni, 'voxelSize')
             val = ni.voxelSize;
@@ -179,10 +179,18 @@ switch param
             %Now we need to calculate voxelSize
             val = prod(niftiGet(ni,'Pixdim'));
         end
-        
+
+    case {'params','scanparams','descrip','description'}
+        if isfield(ni,'descrip')
+            val = niftiGetParamsFromDescrip(ni);
+        else
+            warning('vista:niftiError','Descrip field does not exist');
+            val = [];
+        end
+
     otherwise
-         error('Unknown parameter %s\n',param);       
-        
+         error('Unknown parameter %s\n',param);
+
 end %switch
 
 
